@@ -6,3 +6,4 @@ dist/
 .DS_Store
 .vscode/
 build/icon.ico
+build/icon.png

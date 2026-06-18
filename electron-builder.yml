@@ -31,6 +31,24 @@ nsis:
   createStartMenuShortcut: true
   shortcutName: cherryTodo
 
+# --- macOS (must be built ON a Mac; `npm run build:mac`) ---
+mac:
+  target:
+    - target: dmg
+      arch:
+        - arm64 # Apple Silicon
+        - x64 # Intel
+  category: public.app-category.productivity
+  icon: build/icon.png # electron-builder converts this to .icns
+  # Hardened runtime + signing are required for distribution/notarization.
+  # For unsigned local testing, set CSC_IDENTITY_AUTO_DISCOVERY=false.
+  hardenedRuntime: true
+  gatekeeperAssess: false
+
+dmg:
+  title: ${productName} ${version}
+  artifactName: ${productName}-${version}-${arch}.${ext}
+
 # Optional portable single-exe build: `electron-builder --win portable`
 portable:
   artifactName: ${productName}-${version}-Portable.${ext}
