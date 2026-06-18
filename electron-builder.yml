@@ -1,0 +1,36 @@
+appId: com.cherrytodo.app
+productName: cherryTodo
+copyright: Copyright © 2026 cherryTodo
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+
+# Bundle the persisted data location nicely under the app's userData folder.
+asar: true
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-Setup.${ext}
+  # Generated from build/icon.svg by `npm run icon` (runs automatically before
+  # build:win / build:dir). electron-builder also auto-detects build/icon.ico.
+  icon: build/icon.ico
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: cherryTodo
+
+# Optional portable single-exe build: `electron-builder --win portable`
+portable:
+  artifactName: ${productName}-${version}-Portable.${ext}

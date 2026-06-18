@@ -1,0 +1,41 @@
+{
+  "name": "cherrytodo",
+  "version": "1.0.0",
+  "description": "🍒 CherryTodo - A tiny floating retro to-do bookmark that lives on the edge of your screen",
+  "main": "./out/main/index.js",
+  "author": "cacheton code",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "electron-vite build",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "icon": "node scripts/make-icon.mjs",
+    "build:win": "npm run icon && npm run build && electron-builder --win --config electron-builder.yml",
+    "build:dir": "npm run icon && npm run build && electron-builder --dir --config electron-builder.yml"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "electron": "^31.2.0",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "framer-motion": "^11.3.2",
+    "png-to-ico": "^3.0.1",
+    "postcss": "^8.4.39",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.35.1",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3"
+  }
+}
