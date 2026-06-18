@@ -1,39 +1,27 @@
 # 🍒 cherryTodo
 
-A tiny floating retro to-do **bookmark** that lives on the edge of your screen.
+A tiny floating retro to-do widget that lives on the edge of your screen.
 
 cherryTodo stays always-on-top and takes almost no space. Collapsed, it's a little
-pixel-art cherry bookmark stuck to the left or right edge of your monitor. The two
+pixel-art cherry **side tab** stuck to the left or right edge of your monitor. The two
 cherries show your progress at a glance — **left cherry = completed**, **right cherry =
 total**. Double-click to unfurl your task list; double-click again to tuck it back away.
-
-```
-Collapsed            Expanded
-  ╭──╮          ╭──────────────────╮
-  │🍒│   ──▶   │ 🍒 Today's Tasks │
-  │5 │          ├──────────────────┤
-  │10│          │ ☑ Read Paper     │
-  │ ◣│         │ ☑ Gym             │
-  ╰──╯          │ ☐ Study          │
-                │ ☐ Laundry        │
-                │ ☐ Review Notes   │
-                ╰──────────────────╯
-```
 
 ---
 
 ## ✨ Features
 
 - **Always on top** — pinned above every other window (even fullscreen apps).
-- **Collapsed bookmark mode** — only **66 × 96 px**, docks flush to the left or right edge.
+- **Collapsed side tab** — a tiny rounded cherry tab that hugs the left or right screen edge.
 - **Cherry progress counter** — completed / total drawn _inside_ the two cherries.
-- **Double-click to expand / collapse** with a smooth 200–300 ms animation.
 - **Full task management** — add, edit (double-click a task), delete, check/uncheck, and
   **drag-and-drop reorder**.
-- **Drag to reposition** — grab the bookmark and drag; it snaps to the nearest edge and
-  remembers where you left it.
-- **Local JSON storage** — no database. Everything lives in `tasks.json`.
-- **Dock preference** — Left or Right, mirrored bookmark shape, remembered between launches.
+- **Completed tasks sink to the bottom** automatically.
+- **Drag to reposition** — grab the tab (or the title bar) and drag; it snaps to the nearest
+  edge and remembers where you left it.
+- **Launch at startup** — optional auto-start when you log in (Settings).
+- **Local JSON storage** — no database, fully offline. Everything lives in `tasks.json`.
+- **Retro pixel font** (Mona) bundled locally.
 - **Cute completion state** — `🍒✨ ALL DONE ✨🍒` with a gentle bounce + sparkle.
 
 ---
@@ -62,12 +50,12 @@ Electron · React · TypeScript · Tailwind CSS · Framer Motion · electron-sto
 ```
 Cheery-Todo/
 ├── electron.vite.config.ts        # Build config for main / preload / renderer
-├── electron-builder.yml           # Windows packaging config
+├── electron-builder.yml           # Windows + macOS packaging config
 ├── tailwind.config.mjs
 ├── postcss.config.mjs
 ├── tsconfig*.json
 ├── scripts/
-│   └── make-icon.mjs              # build/icon.svg -> build/icon.ico (multi-size)
+│   └── make-icon.mjs              # build/icon.svg -> icon.ico (Win) + icon.png (mac)
 ├── build/
 │   └── icon.svg                   # Source app icon (auto-converted to icon.ico)
 └── src/
@@ -124,42 +112,46 @@ npm run dev
 
 The bookmark appears docked to the right edge of your primary monitor. Double-click it.
 
-### Type-check
-
-```bash
-npm run typecheck
-```
-
 ---
 
-## 📦 Build a Windows Executable
+## 📦 Build Installers
 
-Produce an NSIS installer (`.exe`) in the `release/` folder:
+App icons are generated automatically from `build/icon.svg` (`npm run icon`,
+which runs before every packaged build), so there's nothing to convert by hand.
+
+### Windows (`.exe`)
 
 ```bash
 npm run build:win
 ```
 
-Output: `release/cherryTodo-1.0.0-Setup.exe`
+Output: `release/cherryTodo-1.0.0-Setup.exe` (NSIS installer)
 
-Other targets:
-
-```bash
-npm run build:dir        # Unpacked app folder (no installer) — fast to test
-electron-builder --win portable   # Single portable .exe (after `npm run build`)
-```
-
-### Branding the app icon (optional)
-
-`build/icon.svg` is the source icon. Convert it to a multi-size `build/icon.ico`
-(256×256 recommended) and electron-builder will pick it up automatically:
+### macOS (`.dmg`) — must be built on a Mac
 
 ```bash
-# Example using ImageMagick
-magick build/icon.svg -define icon:auto-resize=256,128,64,48,32,16 build/icon.ico
+npm run build:mac
 ```
 
-Without an `icon.ico`, the default Electron icon is used.
+Output (both architectures):
+
+```
+release/cherryTodo-1.0.0-arm64.dmg   # Apple Silicon (M1–M4)
+release/cherryTodo-1.0.0-x64.dmg     # Intel
+```
+
+> macOS `.dmg` files can only be built **on macOS** — not from Windows.
+> Building **unsigned** for local testing (skips code signing so the build
+> won't fail without a certificate):
+>
+> ```bash
+> CSC_IDENTITY_AUTO_DISCOVERY=false npm run build:mac
+> ```
+>
+> Distributing/selling on macOS requires an **Apple Developer ID** ($99/yr) to
+> sign + notarize the app — otherwise Gatekeeper warns users on first launch.
+
+Unpacked test build (no installer): `npm run build:dir`.
 
 ---
 
@@ -178,31 +170,9 @@ Shape:
 ```json
 {
   "tasks": [{ "id": "t1", "text": "Read Paper", "completed": true }],
-  "settings": { "dockSide": "right", "dockOffsetY": 120 }
+  "settings": { "dockSide": "right", "dockOffsetY": 120, "launchAtStartup": false }
 }
 ```
 
 It loads automatically on startup and is written through on every change.
 
----
-
-## 🖱️ Usage
-
-| Action                         | How                                             |
-| ------------------------------ | ----------------------------------------------- |
-| Expand task list               | Double-click the bookmark                       |
-| Collapse back to bookmark      | Double-click the title bar, or the `_` button   |
-| Move the bookmark              | Press and drag it — releases snap to nearest edge |
-| Switch dock side               | Footer **◀ Left** / **Right ▶** buttons         |
-| Add task                       | Type in the box, press **Enter** or **+**       |
-| Edit task                      | Double-click the task text                      |
-| Complete / uncomplete          | Click the checkbox                              |
-| Delete task                    | Hover the row, click the **✕**                  |
-| Reorder                        | Drag the ⠿ handle on the left of a row          |
-| Quit                           | Title bar **✕** button                          |
-
----
-
-## License
-
-MIT
