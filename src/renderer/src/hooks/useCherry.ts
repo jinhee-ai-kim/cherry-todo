@@ -70,21 +70,9 @@ export function useCherry(): CherryController {
   }, [])
 
   const toggleTask = useCallback((id: string) => {
-    setTasks((prev) => {
-      const target = prev.find((t) => t.id === id)
-      if (!target) return prev
-      const updated = { ...target, completed: !target.completed }
-      const rest = prev.filter((t) => t.id !== id)
-      if (updated.completed) {
-        // Just completed → sink to the very bottom of the list.
-        return [...rest, updated]
-      }
-      // Un-completed → lift it back above the completed group (bottom of active items).
-      const firstCompleted = rest.findIndex((t) => t.completed)
-      return firstCompleted === -1
-        ? [...rest, updated]
-        : [...rest.slice(0, firstCompleted), updated, ...rest.slice(firstCompleted)]
-    })
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    )
   }, [])
 
   const reorderTasks = useCallback((next: Task[]) => setTasks(next), [])

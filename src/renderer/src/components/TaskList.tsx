@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Reorder } from 'framer-motion'
 import type { AppSettings, DockSide, Task } from '../types'
@@ -51,6 +51,13 @@ export function TaskList(props: TaskListProps): JSX.Element {
   const [newText, setNewText] = useState('')
   const [showSettings, setShowSettings] = useState(false)
   const drag = useEdgeDrag(onSettingsChange)
+
+  // Always render incomplete tasks first, completed ones sunk to the bottom.
+  // (Stable sort keeps each group's manual drag order.)
+  const ordered = useMemo(
+    () => [...tasks].sort((a, b) => Number(a.completed) - Number(b.completed)),
+    [tasks]
+  )
 
   const submit = (): void => {
     if (!newText.trim()) return
@@ -139,8 +146,8 @@ export function TaskList(props: TaskListProps): JSX.Element {
         ) : (
           <>
             {allDone && <AllDone count={total} />}
-            <Reorder.Group axis="y" values={tasks} onReorder={onReorder} className="list-none">
-              {tasks.map((task) => (
+            <Reorder.Group axis="y" values={ordered} onReorder={onReorder} className="list-none">
+              {ordered.map((task) => (
                 <TaskItem
                   key={task.id}
                   task={task}
