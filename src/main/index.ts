@@ -184,6 +184,9 @@ if (!gotTheLock) {
   })
 
   app.whenReady().then(() => {
+    // Hide the macOS Dock icon — this is a floating widget, not a full app.
+    // (No-op on Windows/Linux; quit via the in-app X button.)
+    app.dock?.hide()
     registerIpc()
     // Keep the OS login item in sync with the saved preference.
     applyLaunchAtStartup(dataStore.getSettings().launchAtStartup)
