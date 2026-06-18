@@ -115,6 +115,7 @@ export function TaskList(props: TaskListProps): JSX.Element {
           <button
             aria-label="Quit cherryTodo"
             title="Quit"
+            onPointerDown={(e) => e.stopPropagation()}
             onClick={onQuit}
             className="btn-95 grid h-4 w-5 place-items-center"
           >
